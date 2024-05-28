@@ -1,9 +1,6 @@
 import React, {useState} from "react";
 import ImageUpload from "./components/ImageUpload";
-import { Canvas } from "@react-three/fiber";
-import { XR, VRButton, Controllers, Hands } from "@react-three/xr";
-import { OrbitControls } from "@react-three/drei";
-import Room from "./components/Room";
+import { useNavigate } from "react-router-dom";
 
 const App = () => {
   const [images, setImages] = useState({
@@ -15,6 +12,8 @@ const App = () => {
     roof: null,
   });
 
+  const navigate = useNavigate();
+
   const handleUploadImages = (label, image) => {
     setImages((prevImages) => ({
       ...prevImages,
@@ -24,6 +23,11 @@ const App = () => {
 
   const allImagesUploaded = Object.values(images).every((image) => image !== null)
 
+
+  const handleSubmit = () => {
+    navigate('/room', {state: {images}});
+  };
+
   return (
     <div>
       {Object.keys(images).map((label) => (
@@ -31,20 +35,8 @@ const App = () => {
       ))}
 
       {allImagesUploaded && (
-        <button onClick={() => console.log("Submit all pages")}>Submit all Pictures</button>
+        <button onClick={handleSubmit}>Submit all Pictures</button>
       )}
-
-      <VRButton />
-      <Canvas>
-        <XR>
-          <Controllers />
-          <Hands />
-          <ambientLight />
-          <pointLight position={[10,10,10]} />
-          {allImagesUploaded && <Room images={images} />}
-          <OrbitControls />
-        </XR>
-      </Canvas>
     </div>
   );
 };

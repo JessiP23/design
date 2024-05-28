@@ -1,54 +1,44 @@
-import React from "react";
-import { useTexture } from "@react-three/drei";
+import React, { useMemo } from "react";
+import * as THREE from 'three';
+import { Plane } from "@react-three/drei";
 
-const Room = ({ images }) =>{ 
-    const textures = useTexture({
-        wall1: images.wall1,
-        wall2: images.wall2,
-        wall3: images.wall3,
-        wall4: images.wall4,
-        floor: images.floor,
-        roof: images.roof,
-    });
+const Room = ({ images, wallColors, floorTexture }) =>{ 
+    const textures = (image) => {
+        const texture = new THREE.TextureLoader().load(image);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(1,1);
+        return texture;
+    };
+
+    const floorMaterial = useMemo(() => {
+        if (floorTexture) {
+            return new THREE.MeshBasicMaterial({ map: textures(floorTexture) });
+        }
+        return new THREE.MeshBasicMaterial({ color: '#ffffff' });
+    }, [floorTexture]);
 
     return(
-        <group>
-            {/*wall 1 */}
-            <mesh position={[0,2,-5]}>
-                <planeGeometry args={[10,4]} />
-                <meshBasicMaterial map={textures.wall1} />
-            </mesh>
-
-            {/*wall 2 */}
-            <mesh position={[-5,2,0]} rotation={[0, Math.PI / 2, 0]}>
-                <planeGeometry args={[10,4]} />
-                <meshBasicMaterial map={textures.wall2} />
-            </mesh>
-
-            {/*wall 3 */}
-            <mesh position={[0, 2, 5]} rotation={[0, Math.PI, 0]}>
-                <planeGeometry args={[10,4]} />
-                <meshBasicMaterial map={textures.wall3} />
-            </mesh>
-
-            {/*wall 4 */}
-            <mesh position={[5,2,0]} rotation={[0, -Math.PI / 2, 0]}>
-                <planeGeometry args={[10,4]} />
-                <meshBasicMaterial map={textures.wall4} />
-            </mesh>
-
-            {/*Floor */}
-            <mesh position={[0,0,0]} rotation={[-Math.PI / 2, 0, 0]}>
-                <planeGeometry args={[10,10]} />
-                <meshBasicMaterial map={textures.floor} />
-            </mesh>
-
-            {/*Roof */}
-            <mesh position={[0, 4, 0]} rotation={[Math.PI / 2, 0, 0]}>
-                <planeGeometry args={[10,10]} />
-                <meshBasicMaterial map={textures.roof} />
-            </mesh>
-        </group>
+        <>
+            <Plane args={[10,10]} position={[0,0,0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <meshBasicMaterial attach="material" map={images.floor ? textures(images.floor) : null} />
+            </Plane>
+            <Plane args={[10,10]} position={[0,10,0]} rotation={[Math.PI / 2, 0, 0]}>
+                <meshBasicMaterial attach="material" map={images.roof ? textures(images.roof) : null} />
+            </Plane>
+            <Plane args={[10,10]} position={[5,5,0]} rotation={[0, -Math.PI / 2, 0]}>
+                <meshBasicMaterial attach="material" color={wallColors.wall1} map={images.wall1 ? textures(images.wall1) : null} />
+            </Plane>
+            <Plane args={[10,10]} position={[-5,5,0]} rotation={[0,Math.PI / 2, 0]}>
+                <meshBasicMaterial attach="material" color={wallColors.wall2} map={images.wall2 ? textures(images.wall2) : null} />
+            </Plane>
+            <Plane args={[10,10]} position={[0,5,5]} rotation={[0, Math.PI, 0]}>
+                <meshBasicMaterial attach="material" color={wallColors.wall3} map={images.wall3 ? textures(images.wall3) : null} />
+            </Plane>
+            <Plane args={[10,10]} position={[0,5,-5]}>
+                <meshBasicMaterial attach="material" color={wallColors.wall4} map={images.wall4 ? textures(images.wall4) : null} />
+            </Plane>
+        </>
     );
 };
 

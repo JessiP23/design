@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { XR, VRButton, Controllers, Hands } from '@react-three/xr';
+import React, { useState, useRef } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import Room from './Room';
 import ColorPicker from './ColorPicker';
 import TexturePicker from './TexturePicker';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './RoomPage.css';
+import { XR} from '@react-three/xr';
+import { VRButton } from '@react-three/xr';
 
 const RoomPage = () => {
     const location = useLocation();
@@ -57,24 +58,44 @@ const RoomPage = () => {
                             />
                         ))}
                     </div>
-                </div>
-                <div className="canvas-container">
                     <div className="texture-picker-container">
                         <h2>Pick Floor Texture</h2>
                         <TexturePicker onChange={handleTextureChange} />
                     </div>
+                </div>
+                <div className="canvas-container">
+                
                     <VRButton />
                     <Canvas>
                         <XR>
-                            <OrbitControls maxPolarAngle={Math.PI / 2} minDistance={15} maxDistance={30} />
-                            <Controllers />
-                            <Hands />
+                            <CameraAndControls />
                             <Room images={images} wallColors={wallColors} floorTexture={floorTexture} />
                         </XR>
                     </Canvas>
                 </div>
             </div>
         </div>
+    );
+};
+
+// A separate component to handle camera and controls
+const CameraAndControls = () => {
+    const { camera } = useThree();
+
+    // Set initial camera position
+    camera.position.set(0, 10, 15);
+
+    return (
+        <OrbitControls
+            enableZoom={true}
+            enableRotate={true}
+            enablePan={false}
+            minPolarAngle={0}
+            maxPolarAngle={Math.PI/2}
+            enableDamping={true}
+            dampingFactor={0.1}
+            rotateSpeed={0.5}
+        />
     );
 };
 

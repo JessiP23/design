@@ -19,7 +19,8 @@
     padding-right: 20px;
 }
 
-.color-picker-container {
+.color-picker-container,
+.texture-picker-container {
     width: 100%;
     margin-bottom: 20px;
 }
@@ -29,15 +30,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 100px;
     background-color: #f0f0f0; /* Optional: Add a background color for better visibility */
-}
-
-.texture-picker-container {
-    width: 100%;
-    margin-bottom: 20px;
+    height: 600px;
 }
 
 canvas {
     width: 100%;
-    height: 600px;
+    height: 100%;
 }

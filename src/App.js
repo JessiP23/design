@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ImageUpload from "./components/ImageUpload";
 import { useNavigate } from "react-router-dom";
+import { Scene } from "three";
 
 const App = () => {
     const [images, setImages] = useState({
@@ -26,6 +27,7 @@ const App = () => {
     const handleSubmit = () => {
         navigate('/room', { state: { images } });
     };
+
 
     return (
         <div>

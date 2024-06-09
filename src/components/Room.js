@@ -1,13 +1,36 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from 'three';
 import { useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Plane } from "@react-three/drei";
 
 const Room = ({ images, wallColors, floorTexture }) => {
+    const [isContextLost, setIsContextLost ] = useState(false);
     const orbitControlsRef = useRef();
+    const rendererRef = useRef();
+
+    useEffect(() => {
+        const handleContextLost = (event) => {
+            event.preventDefault();
+            setIsContextLost(true);
+        };
+
+        const handleContextRestored = () => {
+            setIsContextLost(false);
+        };
+
+        window.addEventListener('webglcontextlost', handleContextLost, false);
+        window.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+        return () => {
+            window.removeEventListener('webglcontextlost', handleContextLost);
+            window.removeEventListener('webglcontextrestored', handleContextRestored);
+        };
+    }, []);
 
     const calculateTargetPoint = () => {
+        if (isContextLost) return null;
+
         const controller = orbitControlsRef.current.object;
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();

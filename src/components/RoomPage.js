@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import Room from './Room';
@@ -86,16 +86,18 @@ const CameraAndControls = () => {
     camera.position.set(0, 10, 15);
 
     return (
-        <OrbitControls
-            enableZoom={true}
-            enableRotate={true}
-            enablePan={false}
-            minPolarAngle={0}
-            maxPolarAngle={Math.PI/2}
-            enableDamping={true}
-            dampingFactor={0.1}
-            rotateSpeed={0.5}
-        />
+        <>
+            <OrbitControls
+                enableZoom={true}
+                enableRotate={true}
+                enablePan={false}
+                minPolarAngle={0}
+                maxPolarAngle={Math.PI/2}
+                enableDamping={true}
+                dampingFactor={0.1}
+                rotateSpeed={0.5}
+            />
+        </>
     );
 };
 

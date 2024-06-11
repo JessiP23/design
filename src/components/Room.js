@@ -4,10 +4,9 @@ import { useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Plane } from "@react-three/drei";
 
-const Room = ({ images, wallColors, floorTexture }) => {
+const Room = ({ images = {}, wallColors = {}, floorTexture }) => {
     const [isContextLost, setIsContextLost ] = useState(false);
     const orbitControlsRef = useRef();
-    const rendererRef = useRef();
 
     useEffect(() => {
         const handleContextLost = (event) => {
@@ -97,5 +96,6 @@ const Room = ({ images, wallColors, floorTexture }) => {
         </>
     );
 };
+
 
 export default Room;

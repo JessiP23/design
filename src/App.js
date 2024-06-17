@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ImageUpload from "./components/ImageUpload";
 import { useNavigate } from "react-router-dom";
-import { Scene } from "three";
+import axios from "axios";
 
 const App = () => {
     const [images, setImages] = useState({
@@ -24,9 +24,37 @@ const App = () => {
 
     const allImagesUploaded = Object.values(images).every((image) => image !== null);
 
-    const handleSubmit = () => {
-        navigate('/room', { state: { images } });
+    const handleSubmit = async () => {
+        try{
+            const formData = new FormData();
+            for (const [label, image] of Object.entries(images)) {
+                formData.append('files', dataURItoBlob(image), `${label}.png`);
+            }
+            formData.append("promp", 'Your prompt text here');
+
+            const response = await axios.post("http://localhost:8000/api/upload/", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            navigate('/room', { state: { images, results: response.data } });
+        } catch(error) {
+            console.error("Error uploading images:", error);
+        }
     };
+
+    const dataURItoBlob = (dataURI) => {
+        const byteString = atob(dataURI.split(",")[1]);
+        const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mimeString });
+        
+    }
 
 
     return (
